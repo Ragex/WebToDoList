@@ -1,0 +1,34 @@
+</!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="author" content="Ilya 'Ragex' Seleznev">
+		<meta name="description" content="Web ToDo List">
+		<meta name="viewport" content="width=device-width">
+
+		<title>Web ToDo List</title>
+		<!-- <script src="jquery-3.1.1.min.js"></script> -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="script.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+	</head>
+	<body>
+	<!-- <form id="form"> -->
+	<div id="getForm">
+		<table>
+			<tr><td><label for="tsk_title">Title :</label></td><td><input type="text" id="tsk_title"></input></td></tr>
+			<tr><td><label for="tsk_auth">Author :</label></td><td><input type="text" id="tsk_auth"></input></td></tr>
+			<tr><td><input type="hidden" id="tsk_status" value="false"></input></td><td style="text-align: right;"><button id="btnAddTask">Add task</button></td></tr>
+		</table>
+	</div>
+	</br></br>
+	<hr/>
+	</br>
+	<!-- </form> -->
+	<div>
+		<table id="tskTable" border = 1>
+			<tr id="table-header"><th>Status</th><th>Title</th><th>Author</th><th>Last Update</th></tr>
+		</table>
+	</div>
+	</body>
+</html> 

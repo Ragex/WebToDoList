@@ -1,0 +1,22 @@
+div
+{	
+}
+
+#tskTable td{
+	min-width: 100px;
+}
+
+th{
+	background-color: lightgray;
+}
+
+
+.set-warning
+{
+	border-color:red;
+}
+
+.tsk-complite
+{
+	background-color: cyan;
+}
