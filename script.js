@@ -14,26 +14,7 @@ function readLocalStorage()
 {
 	var strData = JSON.parse(localStorage.getItem('WTDL')); 	
 
-	if(strData){
-		// var obj ={};
-
-		// for(var i=0; i<strData.length;i++){
-		// 	obj = JSON.parse(strData[i]);				
-		// 	obj.updated = new Date(obj.updated);
-			
-		// 	$('#table-header').after("<tr><td><input type='checkbox' " + chkboxState(obj.done) + "></input></td>\
-		// 							 <td>"+obj.title+"</td><td>"+obj.author+"</td>\
-		// 							 <td>"+check10(obj.updated.getDate())+"."
-		// 							 +check10(obj.updated.getMonth()+1)+"."
-		// 							 +obj.updated.getFullYear()
-		// 							 +" "+check10(obj.updated.getHours())+":"
-		// 							 +check10(obj.updated.getMinutes())+"</td></tr>");
-		// }
-			
-			// $('#tskTable'+' td:nth-child(2)').attr('contenteditable','true');
-			// $('#tskTable'+' td:nth-child(3)').attr('contenteditable','true');
-	}
-    else strData = [];
+	if(!strData) strData = [];
 
     return strData;
 };
@@ -78,7 +59,7 @@ function drawTable(tasks)
 {
 	var obj ={};
 
-	if(tasks.length){
+	if(tasks.length >= 0){			//if we have an empty array. In this case array.length = 0;
   		for(var i=0; i<tasks.length;i++){
 			obj = JSON.parse(tasks[i]);				
 			obj.updated = new Date(obj.updated);
@@ -92,7 +73,7 @@ function drawTable(tasks)
 									 +check10(obj.updated.getMinutes())+"</td></tr>");
 		}
 	}
-	else{ //if we have only one task
+	else{ //if we have only one task, array.length = undifined;
 		 $('#table-header').after("<tr><td><input type='checkbox' " + chkboxState(tasks.done) + "></input></td>\
 									<td>"+tasks.title+"</td><td>"+tasks.author+"</td>\
 									<td>"+check10(tasks.updated.getDate())+"."
@@ -110,8 +91,6 @@ $(document).ready(
 		var taskList = readLocalStorage();
 		drawTable(taskList);
 
-		console.log(taskList);
-		
 		$('#btnAddTask').click(
 			function(){
 						if(validateInputFields()){
