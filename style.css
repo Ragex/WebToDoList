@@ -18,5 +18,10 @@ th{
 
 .tsk-complite
 {
+	background-color: darkgreys;
+}
+
+.tsk-selected
+{
 	background-color: cyan;
 }

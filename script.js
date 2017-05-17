@@ -97,5 +97,12 @@ $(document).ready(
 							drawTable(addTask(taskList));	
 							$('#tsk_title').val(""); $('#tsk_auth').val("");
 						}
-		});	
+		});
+
+		$('html').on('click','#tskTable tr',
+			function(){
+    			$(this).toggleClass('tsk-selected');
+    			if($(this).hasClass('tsk-selected')) $(this).append("<button id=\"btnDel\">Delete</button>");
+    			else $('#btnDel').remove();
+		});
 });
