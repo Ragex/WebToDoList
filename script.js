@@ -55,6 +55,21 @@ function addTask(storage)
 }
 
 
+function validateInputFields()
+{
+	if(!$('#tsk_title').val()) $('#tsk_title').addClass("set-warning");
+	else if(!$('#tsk_auth').val()){
+			$('#tsk_title').removeClass("set-warning");
+	 		$('#tsk_auth').addClass("set-warning");
+		}
+		else{
+			 $('#tsk_title').removeClass("set-warning"); 
+			 $('#tsk_auth').removeClass("set-warning");
+			 return true;
+		}
+
+	return false;
+}
 
 
 
@@ -62,26 +77,31 @@ function addTask(storage)
 
 $(document).ready(
 	function(){
-		
 		var taskList = readLocalStorage();
+
+		console.log(taskList);
 		
 		$('#btnAddTask').click(
 			function(){
 
-					if(logItem.title == ""){
-					   $('#tsk_title').addClass("set-warning");
-					}
-					else if(logItem.author == ""){
-						        $('#tsk_title').removeClass("set-warning");
-								$('#tsk_auth').addClass("set-warning");
-					}
-					else{
-						$('#tsk_title').removeClass("set-warning");
-						$('#tsk_auth').removeClass("set-warning");
-						$('#tsk_title').val("");$('#tsk_auth').val("");
+					// if(logItem.title == ""){
+					//    $('#tsk_title').addClass("set-warning");
+					// }
+					// else if(logItem.author == ""){
+					// 	        $('#tsk_title').removeClass("set-warning");
+					// 			$('#tsk_auth').addClass("set-warning");
+					// }
+					// else{
+					// 	$('#tsk_title').removeClass("set-warning");
+					// 	$('#tsk_auth').removeClass("set-warning");
+					// 	$('#tsk_title').val("");$('#tsk_auth').val("");
 						
-						addTask(taskList);	
-					}
+						if(validateInputFields()){
+							addTask(taskList);	
+							$('#tsk_title').val(""); $('#tsk_auth').val("");
+						}
+
+					//}	
 			});
 		
 	});
