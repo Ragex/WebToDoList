@@ -52,8 +52,8 @@ function delTask(storage,id)
 
 function validateInputFields()
 {
-	if(!$('#tsk_title').val()) $('#tsk_title').addClass("set-warning");
-	else if(!$('#tsk_auth').val()){
+	if(!$('#tsk_title').val().trim()) $('#tsk_title').addClass("set-warning");
+	else if(!$('#tsk_auth').val().trim()){
 			$('#tsk_title').removeClass("set-warning");
 	 		$('#tsk_auth').addClass("set-warning");
 		}
