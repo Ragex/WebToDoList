@@ -32,9 +32,21 @@ function addTask(storage)
 	taskItem.updated = date;
 
 	storage.push(JSON.stringify(taskItem));
-	localStorage.setItem('WTDL',JSON.stringify(storage));
+	try{
+		localStorage.setItem('WTDL',JSON.stringify(storage));
+	} catch(err){
+		if(err == QUOTA_EXCEEDED_ERR) alert('Local storage is overflow. Please delete some finished tasks.');		
+	}
 
 	return taskItem;
+}
+
+
+function delTask(storage,id)
+{
+	storage.splice(id,1);
+	localStorage.setItem('WTDL',JSON.stringify(storage));
+	return storage;
 }
 
 
@@ -64,7 +76,7 @@ function drawTable(tasks)
 			obj = JSON.parse(tasks[i]);				
 			obj.updated = new Date(obj.updated);
 			
-			$('#table-header').after("<tr><td><input type='checkbox' " + chkboxState(obj.done) + "></input></td>\
+			$('#table-header').after("<tr id='" +i+ "'><td><input type='checkbox' " + chkboxState(obj.done) + "></input></td>\
 									 <td>"+obj.title+"</td><td>"+obj.author+"</td>\
 									 <td>"+check10(obj.updated.getDate())+"."
 									 +check10(obj.updated.getMonth()+1)+"."
@@ -72,9 +84,11 @@ function drawTable(tasks)
 									 +" "+check10(obj.updated.getHours())+":"
 									 +check10(obj.updated.getMinutes())+"</td></tr>");
 		}
+		window.WTDL_num = i-1;
 	}
-	else{ //if we have only one task, array.length = undifined;
-		 $('#table-header').after("<tr><td><input type='checkbox' " + chkboxState(tasks.done) + "></input></td>\
+	else{ //if we have only one task, tasks.length = undifined.
+		 window.WTDL_num++;
+		 $('#table-header').after("<tr id='" +window.WTDL_num+ "'><td><input type='checkbox' " + chkboxState(tasks.done) + "></input></td>\
 									<td>"+tasks.title+"</td><td>"+tasks.author+"</td>\
 									<td>"+check10(tasks.updated.getDate())+"."
 									+check10(tasks.updated.getMonth()+1)+"."
@@ -88,6 +102,8 @@ function drawTable(tasks)
 
 $(document).ready(
 	function(){
+		window.WTDL_num = 0;
+
 		var taskList = readLocalStorage();
 		drawTable(taskList);
 
@@ -99,10 +115,23 @@ $(document).ready(
 						}
 		});
 
-		$('html').on('click','#tskTable tr',
+		$('html').on('click','#tskTable tr',   //binding handler for dynamic generated tags
 			function(){
     			$(this).toggleClass('tsk-selected');
-    			if($(this).hasClass('tsk-selected')) $(this).append("<button id=\"btnDel\">Delete</button>");
+    			if($(this).hasClass('tsk-selected')){
+    			   $('#btnDel').remove();  
+    			   $(this).append("<button id=\"btnDel\">Delete</button>");
+
+    			   $('#btnDel').click(
+    			   		function(){
+    			   			taskList = delTask(readLocalStorage(),$('#btnDel').parent().attr('id'));
+
+    			   			for(var i=0; i<=window.WTDL_num; i++) $('#'+i).remove();
+
+    			   			window.WTDL_num--;
+							drawTable(taskList);			   		
+    			   	});
+    			}
     			else $('#btnDel').remove();
 		});
 });
