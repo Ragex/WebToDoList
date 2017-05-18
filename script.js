@@ -83,6 +83,8 @@ function drawTable(tasks)
 									 +obj.updated.getFullYear()
 									 +" "+check10(obj.updated.getHours())+":"
 									 +check10(obj.updated.getMinutes())+"</td></tr>");
+
+			if(chkboxState(obj.done)) $('#'+i).addClass('tsk-complite');
 		}
 		window.WTDL_num = i-1;
 	}
@@ -95,7 +97,37 @@ function drawTable(tasks)
 									+tasks.updated.getFullYear()
 									+" "+check10(tasks.updated.getHours())+":"
 									+check10(tasks.updated.getMinutes())+"</td></tr>");
+
+		 if(chkboxState(obj.done)) $('#'+i).addClass('tsk-complite');
 	}
+}
+
+
+function updTask(operate, storage, id, newData)
+{
+	var task = JSON.parse(storage[id]);	
+
+	switch(operate){
+		case 1: //set task state (checkbox)
+				task.done = newData;			
+				break;
+		case 2: //upd task title
+				task.title = newData;
+				break;
+		case 3: //upd task author
+				task.author = newData;
+				break;
+		default:
+				storage[id] = JSON.stringify(task);
+				return storage;
+	
+	}
+
+	task.updated = new Date();
+	storage[id] = JSON.stringify(task);
+ 	localStorage.setItem('WTDL',JSON.stringify(storage));
+
+	return storage;
 }
 
 
@@ -134,4 +166,19 @@ $(document).ready(
     			}
     			else $('#btnDel').remove();
 		});
+
+		$('html').on('click','#tskTable input',
+			function(){
+				console.log(taskList);
+				if($(this).is(':checked')){
+					taskList = updTask(1, taskList,$(this).parent().parent().attr('id'), true);
+					$(this).parent().parent().addClass('tsk-complite');
+				}
+				else{
+				 	 $(this).parent().parent().removeClass('tsk-complite');
+				 	 taskList = updTask(1, taskList,$(this).parent().parent().attr('id'), false);
+				}
+		});
+
+
 });
