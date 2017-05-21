@@ -37,8 +37,6 @@ function addTask(storage)
 	} catch(err){
 		if(err == QUOTA_EXCEEDED_ERR) alert('Local storage is overflow. Please delete some finished tasks.');		
 	}
-
-	return taskItem;
 }
 
 
@@ -70,6 +68,8 @@ function validateInputFields()
 function drawTable(tasks)
 {
 	var obj ={};
+
+	for(var i=0; i<=window.WTDL_num; i++) $('#'+i).remove();
 
 	if(tasks.length >= 0){			//if we have an empty array. In this case array.length = 0;
   		for(var i=0; i<tasks.length;i++){
@@ -108,13 +108,13 @@ function updTask(operate, storage, id, newData)
 	var task = JSON.parse(storage[id]);	
 
 	switch(operate){
-		case 1: //set task state (checkbox)
+		case 0: //set task state (checkbox)
 				task.done = newData;			
 				break;
-		case 2: //upd task title
+		case 1: //upd task title
 				task.title = newData;
 				break;
-		case 3: //upd task author
+		case 2: //upd task author
 				task.author = newData;
 				break;
 		default:
@@ -142,42 +142,56 @@ $(document).ready(
 		$('#btnAddTask').click(
 			function(){
 						if(validateInputFields()){
-							drawTable(addTask(taskList));	
+							addTask(taskList)
+							drawTable(taskList);	
 							$('#tsk_title').val(""); $('#tsk_auth').val("");
 						}
 		});
 
-		$('html').on('click','#tskTable tr',   //binding handler for dynamic generated tags
+		$('html').on('click','#tskTable td',   //binding handler for dynamic generated tags
 			function(){
-    			$(this).toggleClass('tsk-selected');
-    			if($(this).hasClass('tsk-selected')){
+    			$(this).parent().toggleClass('tsk-selected');
+    			if($(this).parent().hasClass('tsk-selected')){
     			   $('#btnDel').remove();  
-    			   $(this).append("<button id=\"btnDel\">Delete</button>");
+    			   $(this).parent().append("<button id=\"btnDel\">Delete</button>");
 
     			   $('#btnDel').click(
     			   		function(){
-    			   			taskList = delTask(readLocalStorage(),$('#btnDel').parent().attr('id'));
-
-    			   			for(var i=0; i<=window.WTDL_num; i++) $('#'+i).remove();
-
-    			   			window.WTDL_num--;
-							drawTable(taskList);			   		
+    			   			taskList = delTask(readLocalStorage(),$('#btnDel').parent().attr('id'));   			   			
+							drawTable(taskList);	
+							window.WTDL_num--;		   		
     			   	});
     			}
     			else $('#btnDel').remove();
 		});
 
+		$('html').on('dblclick','#tskTable td:nth-child(2), td:nth-child(3)',   //binding handler for dynamic generated tags
+			function(){
+				$(this).attr('contenteditable',true);
+				
+				$(this).focus();
+				$(this).blur(
+					function(){
+						$(this).attr('contenteditable',false);
+
+						taskList = updTask($(this).prop('cellIndex'), taskList,$(this).parent().attr('id'),
+										   $(this).prop('textContent'));
+				});
+
+		});
+
 		$('html').on('click','#tskTable input',
 			function(){
-				console.log(taskList);
 				if($(this).is(':checked')){
-					taskList = updTask(1, taskList,$(this).parent().parent().attr('id'), true);
+					taskList = updTask(0, taskList,$(this).parent().parent().attr('id'), true);
 					$(this).parent().parent().addClass('tsk-complite');
 				}
 				else{
 				 	 $(this).parent().parent().removeClass('tsk-complite');
-				 	 taskList = updTask(1, taskList,$(this).parent().parent().attr('id'), false);
+				 	 taskList = updTask(0, taskList,$(this).parent().parent().attr('id'), false);
 				}
+
+				drawTable(taskList);
 		});
 
 
